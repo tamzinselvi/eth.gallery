@@ -1,0 +1,23 @@
+<div class="domain-network-container">
+  <div class="header">
+    <h2>Identify throwaway email addresses</h2>
+    <h1>Improve conversion</h1>
+    <button class="font-accent" md-raised-button>LEARN MORE</button><br/>
+    <button class="font-accent" md-raised-button>VIEW API</button>
+  </div>
+  <svg #svg>
+    <line *ngFor="let line of lines"
+          [attr.x1]="getNodeCx(line.source)"
+          [attr.y1]="getNodeCy(line.source)"
+          [attr.x2]="getNodeCx(line.target)"
+          [attr.y2]="getNodeCy(line.target)"
+          [attr.stroke]="line.stroke"
+          [ngStyle]="{ opacity: line.opacity }"/>
+    <circle *ngFor="let node of nodes"
+            [attr.cx]="getNodeCx(node)"
+            [attr.cy]="getNodeCy(node)"
+            r="5"
+            [attr.fill]="node.fill"
+            [ngStyle]="{ opacity: node.opacity }"/>
+  </svg>
+</div>

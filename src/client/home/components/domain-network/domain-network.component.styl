@@ -1,0 +1,33 @@
+@import "../../../app.variables.styl"
+
+bd-domain-network
+  .domain-network-container
+    position relative
+    background-color color-primary
+    height 100vh
+    min-height min-height
+    width 100%
+
+    .header
+      position absolute
+      text-align center
+      z-index 100
+      transform translateX(-50%)
+      left 50%
+      top calc(25% + 56px)
+      color color-white
+
+      > button
+        color color-black
+        width 125px
+        margin-bottom 12px
+
+    & > svg
+      height 100%
+      width 100%
+      opacity 0.5
+      vertical-align middle
+
+      & > circle, & > line
+        transition opacity 0.5s
+        opacity 0

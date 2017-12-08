@@ -1,0 +1,27 @@
+{
+  "name": "eth.gallery",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "ganache-cli --accounts=1 --account=\"0x519e6c7a4bb797f2bef6dff08c14063f978feb0e79ece37bc22cbc09abbada20,10000000000000000000000000000000000000000000\"",
+    "contract:build": "cd src/contract && $(npm bin)/truffle build",
+    "contract:deploy": "cd src/contract && $(npm bin)/truffle deploy",
+    "contract:migrate": "cd src/contract && $(npm bin)/truffle migrate",
+    "contract:console": "cd src/contract && $(npm bin)/truffle console",
+    "contract:test": "cd src/contract && $(npm bin)/truffle test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "keybase://team/semag/eth.gallery"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "ganache-cli": "6.0.3",
+    "truffle": "4.0.1"
+  }
+}
