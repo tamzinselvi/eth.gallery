@@ -8,10 +8,14 @@
   },
   "scripts": {
     "start": "ganache-cli --accounts=1 --account=\"0x519e6c7a4bb797f2bef6dff08c14063f978feb0e79ece37bc22cbc09abbada20,10000000000000000000000000000000000000000000\"",
-    "contract:build": "cd src/contract && $(npm bin)/truffle build",
-    "contract:deploy": "cd src/contract && $(npm bin)/truffle deploy",
-    "contract:migrate": "cd src/contract && $(npm bin)/truffle migrate",
-    "contract:console": "cd src/contract && $(npm bin)/truffle console",
+    "watch": "$(npm bin)/watch -p \"src/**/*\" -c \"npm run build\"",
+    "build": "npm run contract:migrate && npm run client:build",
+    "client:build": "$(npm bin)/webpack && cp src/client/index.html build/index.html",
+    "contract:build": "cd src/contract && $(npm bin)/truffle build && npm run contract:copy-build",
+    "contract:copy-build": "cp -rf src/contract/build/* src/client/",
+    "contract:deploy": "cd src/contract && $(npm bin)/truffle deploy && npm run contract:copy-build",
+    "contract:migrate": "cd src/contract && $(npm bin)/truffle migrate && npm run contract:copy-build",
+    "contract:console": "cd src/contract && $(npm bin)/truffle console && npm run contract:copy-build",
     "contract:test": "cd src/contract && $(npm bin)/truffle test"
   },
   "repository": {
@@ -21,7 +25,33 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@angular/animations": "^4.0.0",
+    "@angular/common": "^4.0.0",
+    "@angular/compiler": "^4.0.0",
+    "@angular/core": "^4.0.0",
+    "@angular/forms": "^4.0.0",
+    "@angular/http": "^4.0.0",
+    "@angular/platform-browser": "^4.0.0",
+    "@angular/platform-browser-dynamic": "^4.0.0",
+    "@angular/router": "^4.0.0",
+    "core-js": "^2.4.1",
+    "css-loader": "0.28.1",
+    "extract-text-webpack-plugin": "2.1.0",
+    "file-loader": "0.11.1",
     "ganache-cli": "6.0.3",
-    "truffle": "4.0.1"
+    "html-loader": "0.4.4",
+    "raw-loader": "^0.5.1",
+    "rxjs": "^5.1.0",
+    "stylus": "0.54.5",
+    "stylus-loader": "3.0.1",
+    "truffle": "4.0.1",
+    "ts-loader": "2.0.3",
+    "ts-node": "3.0.4",
+    "tslint": "5.3.2",
+    "typescript": "2.3.3",
+    "watch-cli": "^0.2.3",
+    "web3": "^1.0.0-beta.26",
+    "webpack": "2.3.2",
+    "zone.js": "^0.8.4"
   }
 }

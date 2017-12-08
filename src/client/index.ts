@@ -1,12 +1,17 @@
-import "./polyfills"
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/share';
+import * as EthGallery from "./contracts/EthGallery.json";
+import * as address from "./contracts/address.json";
 
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+window["address"] = address;
 
-import { AppModule } from './app.module';
+const Web3 = window["Web3"];
 
-platformBrowserDynamic().bootstrapModule(AppModule);
+if (typeof window["web3"] !== 'undefined') {
+  window["web3"] = new Web3(window["web3"].currentProvider);
+} else {
+  window["web3"] = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+}
+
+const EthGalleryContract = window["web3"].eth.contract(EthGallery["abi"]);
+window["ethGallery"] = EthGalleryContract.at(address);
 
 export default {}

@@ -1,5 +1,4 @@
 module.exports = {
-  contracts_build_directory: "../../build/contract",
   networks: {
     development: {
       host: "localhost",
