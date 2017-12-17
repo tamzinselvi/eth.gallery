@@ -7,6 +7,9 @@ module.exports = {
     filename: 'app.js',
     path: __dirname + '/build/bundle'
   },
+  node: {
+    fs: 'empty'
+  },
   module: {
     rules: [
       {
@@ -23,14 +26,14 @@ module.exports = {
         loader: 'style-loader!css-loader'
       },
       {
-        test: /\.styl$/,
-        loader: 'style-loader!css-loader!stylus-loader?paths=node_modules/bootstrap-stylus/stylus/'
+        test: /\.sass$/,
+        loader: 'style-loader!css-loader!sass-loader'
       },
       {
-        test: /\.(svg|png|ttf)$/,
+        test: /\.(svg|png|eot|ttf|woff|woff2|wasm)$/,
         loader: 'file-loader',
         options: {
-          publicPath: __dirname + "/build/bundle"
+          publicPath: "/bundle/"
         }
       }
     ]

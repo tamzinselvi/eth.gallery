@@ -1,0 +1,77 @@
+<div class="hero-head">
+  <nav class="navbar is-transparent">
+    <div class="navbar-brand">
+      <div class="logo" [ngClass]="{ 'is-white': router.url === '/' }" [routerLink]="['/']"></div>
+      <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" [routerLink]="['/gallery']">
+            Art
+          </a>
+          <div class="navbar-dropdown is-boxed">
+            <a class="navbar-item" [routerLink]="['/gallery']">
+              Newest
+            </a>
+            <a class="navbar-item" [routerLink]="['/gallery']">
+              Most Popular
+            </a>
+            <a class="navbar-item" [routerLink]="['/gallery']">
+              Most Expensive
+            </a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" [routerLink]="['/gallery']">
+            Artists
+          </a>
+          <div class="navbar-dropdown is-boxed">
+            <a class="navbar-item" [routerLink]="['/gallery']">
+              Newest
+            </a>
+            <a class="navbar-item" [routerLink]="['/gallery']">
+              Most Popular
+            </a>
+            <a class="navbar-item" [routerLink]="['/gallery']">
+              Most Expensive
+            </a>
+          </div>
+        </div>
+        <p class="control has-icons-left has-icons-right is-hidden-touch">
+          <input class="input" type="text" placeholder="Search">
+          <span class="icon is-small is-left">
+            <i class="fa fa-search"></i>
+          </span>
+        </p>
+      </div>
+
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <div class="field is-grouped">
+            <p class="control" *ngIf="accountService.loggedIn">
+              <a class="button" [routerLink]="['/create-art']">
+                <span class="icon">
+                  <i class="fa fa-plus-circle"></i>
+                </span>
+                <span>
+                  Create
+                </span>
+              </a>
+            </p>
+            <p class="control" *ngIf="!accountService.loggedIn">
+              <a class="button is-primary" [routerLink]="['/create-account']">
+                <span>Sign in</span>
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>

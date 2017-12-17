@@ -1,0 +1,23 @@
+@import "app.variables.sass"
+
+body, html
+  margin: 0
+  padding: 0
+  background: #EFF3F4
+
+.is-main
+  display: flex
+  flex-direction: column
+  min-height: 100vh
+
+  .hero
+    transition: background-color 1s
+
+  > *
+    flex-grow: 1
+
+  > footer, > router-outlet
+    flex-grow: 0
+
+  > footer
+    padding: 1em 1.5rem;

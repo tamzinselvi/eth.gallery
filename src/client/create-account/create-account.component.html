@@ -1,0 +1,37 @@
+<section class="hero is-medium">
+  <eg-top-bar></eg-top-bar>
+
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <h1 class="title">
+        Almost there
+      </h1>
+      <h2 class="subtitle">
+        Just a few more details and you are ready to create!
+      </h2>
+
+      <div class="field">
+        <label class="label">Wallet address *</label>
+        <div class="control">
+          <input class="input" type="text" [(ngModel)]="address" disabled>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Email</label>
+        <div class="control">
+          <input class="input" type="text" placeholder="e.g. da.vinci@eth.gallery" [(ngModel)]="email">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Nickname</label>
+        <div class="control">
+          <input class="input" type="text" placeholder="e.g. DaVinci" [(ngModel)]="nickname">
+        </div>
+      </div>
+
+      <a class="button is-primary is-large" (click)="submit()">Create account</a>
+    </div>
+  </div>
+</section>

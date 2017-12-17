@@ -1,0 +1,80 @@
+<div class="modal" [ngClass]="{ 'is-active': uploadModalActive }">
+  <form (ngSubmit)="upload()" [formGroup]="form">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <section class="modal-card-body">
+        <div class="field">
+          <label class="label">Name</label>
+          <div class="control has-icons-right">
+            <input class="input" required type="text" [ngClass]="{ 'is-danger': form.controls.name.touched && !form.controls.name.valid }" maxlength="350" name="name" placeholder="e.g. Mona Lisa" formControlName="name">
+            <span class="icon is-small is-right" [style.visibility]="form.controls.name.touched && !form.controls.name.valid ? 'visible' : 'hidden'">
+              <i class="fa fa-warning"></i>
+            </span>
+          </div>
+
+          <p class="help is-danger" [style.visibility]="form.controls.name.touched && !form.controls.name.valid ? 'visible' : 'hidden'">
+            Name is required
+          </p>
+        </div>
+      </section>
+      <footer class="modal-card-foot">
+        <input type="submit" class="button is-success" value="Upload" [disabled]="uploading">
+        <button class="button" (click)="uploadModalActive = false" [disabled]="uploading">Cancel</button>
+      </footer>
+    </div>
+  </form>
+</div>
+
+<canvas></canvas>
+
+<nav class="navbar">
+  <div class="navbar-menu">
+    <div class="navbar-start">
+      <div class="navbar-item has-dropdown has-dropdown-up is-hoverable">
+        <a class="navbar-link">
+          Resolution
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item">
+            32 x 32
+          </a>
+        </div>
+      </div>
+      <a class="navbar-item is-hoverable">
+        <input type="color">
+      </a>
+      <a class="navbar-item is-hoverable" [ngClass]="{ 'is-active': mode === 'EDIT' }" (click)="mode = 'EDIT'">
+        <span class="icon">
+          <i class="fa fa-lg fa-pencil"></i>
+        </span>
+      </a>
+      <a class="navbar-item is-hoverable" [ngClass]="{ 'is-active': mode === 'PAINT' }" (click)="mode = 'PAINT'">
+        <span class="icon">
+          <i class="fa fa-lg fa-paint-brush"></i>
+        </span>
+      </a>
+      <a class="navbar-item is-hoverable" [ngClass]="{ 'is-active': mode === 'MOVE' }" (click)="mode = 'MOVE'">
+        <span class="icon">
+          <i class="fa fa-lg fa-arrows"></i>
+        </span>
+      </a>
+    </div>
+
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <div class="field is-grouped">
+          <p class="control" (click)="uploadModalActive = true">
+            <a class="button is-primary">
+              <span class="icon">
+                <i class="fa fa-floppy-o"></i>
+              </span>
+              <span>
+                Upload
+              </span>
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

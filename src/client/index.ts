@@ -1,17 +1,14 @@
-import * as EthGallery from "./contracts/EthGallery.json";
-import * as address from "./contracts/address.json";
+import "./polyfills"
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/share';
 
-window["address"] = address;
+import "./fonts"
 
-const Web3 = window["Web3"];
+import { enableProdMode } from '@angular/core';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
-if (typeof window["web3"] !== 'undefined') {
-  window["web3"] = new Web3(window["web3"].currentProvider);
-} else {
-  window["web3"] = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-}
+import { AppModule } from './app.module';
 
-const EthGalleryContract = window["web3"].eth.contract(EthGallery["abi"]);
-window["ethGallery"] = EthGalleryContract.at(address);
+platformBrowserDynamic().bootstrapModule(AppModule);
 
 export default {}
