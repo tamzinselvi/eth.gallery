@@ -1,7 +1,7 @@
 import * as EventEmitter from "events"
 import * as Web3 from "web3"
 
-import * as EthGallery from "../../contract/build/contracts/EthGallery.json"
+import * as EthGallery from "../../contract/build/contracts/Gallery.json"
 import * as config from "../../../config.json"
 
 const ethGalleryAddress = config["address"]

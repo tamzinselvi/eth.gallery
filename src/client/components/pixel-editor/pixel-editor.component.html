@@ -4,7 +4,7 @@
     <div class="modal-card">
       <section class="modal-card-body">
         <div class="field">
-          <label class="label">Name</label>
+          <label class="label" for="name">Name</label>
           <div class="control has-icons-right">
             <input class="input" required type="text" [ngClass]="{ 'is-danger': form.controls.name.touched && !form.controls.name.valid }" maxlength="350" name="name" placeholder="e.g. Mona Lisa" formControlName="name">
             <span class="icon is-small is-right" [style.visibility]="form.controls.name.touched && !form.controls.name.valid ? 'visible' : 'hidden'">
@@ -16,6 +16,12 @@
             Name is required
           </p>
         </div>
+        <div class="field">
+          <label class="label" for="description">Description</label>
+          <div class="control">
+            <textarea class="textarea" type="text" maxlength="1000" name="description" formControlName="description"></textarea>
+          </div>
+        </div>
       </section>
       <footer class="modal-card-foot">
         <input type="submit" class="button is-success" value="Upload" [disabled]="uploading">
@@ -23,6 +29,22 @@
       </footer>
     </div>
   </form>
+</div>
+
+<div class="modal" [ngClass]="{ 'is-active': confirmationModalActive }">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Success</p>
+      <button class="delete" (click)="confirmationModalActive = false"></button>
+    </header>
+    <section class="modal-card-body">
+      Your image has successfully been uploaded to the blockchain! It will show up in your account in a few minutes.
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button" (click)="confirmationModalActive = false">Dismiss</button>
+    </footer>
+  </div>
 </div>
 
 <canvas></canvas>
@@ -36,37 +58,115 @@
         </a>
         <div class="navbar-dropdown">
           <a class="navbar-item">
+            256 x 256
+          </a>
+          <a class="navbar-item">
+            128 x 128
+          </a>
+          <a class="navbar-item">
+            64 x 64
+          </a>
+          <a class="navbar-item">
             32 x 32
+          </a>
+          <a class="navbar-item">
+            16 x 16
           </a>
         </div>
       </div>
-      <a class="navbar-item is-hoverable">
-        <input type="color">
+      <a class="colors">
+        <input name="color1" type="color">
+        <input name="color2" type="color" value="#ffffff">
       </a>
-      <a class="navbar-item is-hoverable" [ngClass]="{ 'is-active': mode === 'EDIT' }" (click)="mode = 'EDIT'">
-        <span class="icon">
-          <i class="fa fa-lg fa-pencil"></i>
-        </span>
+      <div class="navbar-item has-dropdown has-dropdown-up is-hoverable">
+        <a class="navbar-link is-flex-column" [ngClass]="{ 'is-active': mode === 'EDIT' }" (click)="mode = 'EDIT'">
+          <div class="is-size-7 is-keyboard-shortcut">
+            [1]
+          </div>
+          <div class="icon">
+            <i class="fa fa-lg icon-pencil"></i>
+          </div>
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" (click)="pencilWidth = 0; mode = 'EDIT'">
+            1px
+          </a>
+          <a class="navbar-item" (click)="pencilWidth = 1; mode = 'EDIT'">
+            3px
+          </a>
+          <a class="navbar-item" (click)="pencilWidth = 2; mode = 'EDIT'">
+            5px
+          </a>
+        </div>
+      </div>
+      <a class="navbar-item is-hoverable is-flex-column" [ngClass]="{ 'is-active': mode === 'PAINT' }" (click)="mode = 'PAINT'">
+        <div class="is-size-7 is-keyboard-shortcut">
+          [2]
+        </div>
+        <div class="icon">
+          <i class="fa fa-lg icon-droplet"></i>
+        </div>
       </a>
-      <a class="navbar-item is-hoverable" [ngClass]="{ 'is-active': mode === 'PAINT' }" (click)="mode = 'PAINT'">
-        <span class="icon">
-          <i class="fa fa-lg fa-paint-brush"></i>
-        </span>
-      </a>
-      <a class="navbar-item is-hoverable" [ngClass]="{ 'is-active': mode === 'MOVE' }" (click)="mode = 'MOVE'">
-        <span class="icon">
+      <a class="navbar-item is-hoverable is-flex-column" [ngClass]="{ 'is-active': mode === 'MOVE' }" (click)="mode = 'MOVE'">
+        <div class="is-size-7 is-keyboard-shortcut">
+          [3]
+        </div>
+        <div class="icon">
           <i class="fa fa-lg fa-arrows"></i>
-        </span>
+        </div>
       </a>
     </div>
 
     <div class="navbar-end">
       <div class="navbar-item">
         <div class="field is-grouped">
+          <p class="control" (click)="clear()">
+            <a class="button is-danger">
+              <span class="icon">
+                <i class="fa fa-remove"></i>
+              </span>
+              <span>
+                Clear
+              </span>
+            </a>
+          </p>
+        </div>
+      </div>
+      <div class="navbar-item">
+        <div class="file">
+          <label class="file-label">
+            <input class="file-input" (change)="fileImport($event)" type="file" name="resume">
+            <span class="file-cta">
+              <span class="file-icon">
+                <i class="fa fa-upload"></i>
+              </span>
+              <span class="file-label">
+                Import
+              </span>
+            </span>
+          </label>
+        </div>
+      </div>
+      <div class="navbar-item">
+        <div class="field is-grouped">
+          <p class="control" (click)="download()">
+            <a class="button is-link">
+              <span class="icon">
+                <i class="fa fa-floppy-o"></i>
+              </span>
+              <span>
+                Download
+              </span>
+            </a>
+          </p>
+        </div>
+      </div>
+      <div class="navbar-item">
+        <div class="field is-grouped">
           <p class="control" (click)="uploadModalActive = true">
             <a class="button is-primary">
               <span class="icon">
-                <i class="fa fa-floppy-o"></i>
+                <i class="fa icon-eth"></i>
               </span>
               <span>
                 Upload

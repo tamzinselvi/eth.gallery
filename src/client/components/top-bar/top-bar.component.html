@@ -11,7 +11,10 @@
 
     <div class="navbar-menu">
       <div class="navbar-start">
-        <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-item" [routerLink]="['/gallery']">
+          Browse
+        </a>
+        <!--div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link" [routerLink]="['/gallery']">
             Art
           </a>
@@ -42,9 +45,9 @@
               Most Expensive
             </a>
           </div>
-        </div>
+        </div-->
         <p class="control has-icons-left has-icons-right is-hidden-touch">
-          <input class="input" type="text" placeholder="Search">
+          <input class="input" type="text" placeholder="Search" [formControl]="searchControl" [value]="search" (keyup.enter)="onEnter()">
           <span class="icon is-small is-left">
             <i class="fa fa-search"></i>
           </span>
@@ -65,8 +68,18 @@
               </a>
             </p>
             <p class="control" *ngIf="!accountService.loggedIn">
-              <a class="button is-primary" [routerLink]="['/create-account']">
+              <a class="button is-primary" [routerLink]="['/account']">
                 <span>Sign in</span>
+              </a>
+            </p>
+            <p class="control" *ngIf="accountService.loggedIn">
+              <a class="button is-primary" [routerLink]="['/account']">
+                <span class="icon">
+                  <i class="fa fa-user"></i>
+                </span>
+                <span>
+                  {{ accountService.account.nickname }}
+                </span>
               </a>
             </p>
           </div>

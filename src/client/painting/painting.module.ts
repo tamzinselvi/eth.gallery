@@ -3,7 +3,7 @@ import { NgModule } from "@angular/core"
 import { SharedModule } from "../shared.module"
 import { ComponentsModule } from "../components/components.module"
 
-import { CreateAccountComponent } from "./create-account.component"
+import { PaintingComponent } from "./painting.component"
 
 @NgModule({
   imports: [
@@ -11,7 +11,7 @@ import { CreateAccountComponent } from "./create-account.component"
     ComponentsModule,
   ],
   declarations: [
-    CreateAccountComponent,
+    PaintingComponent,
   ],
 })
-export class CreateAccountModule { }
+export class PaintingModule { }

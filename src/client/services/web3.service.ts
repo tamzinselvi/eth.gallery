@@ -1,7 +1,10 @@
-import * as EthGallery from "../../contract/build/contracts/EthGallery.json"
+import * as EthGallery from "../../contract/build/contracts/Gallery.json"
 import * as config from "../../../config.json"
 import * as Web3 from "web3"
 import * as abiDecoder from "abi-decoder"
+import BigNumber from "bignumber.js"
+
+window["BigNumber"] = BigNumber
 
 window["abiDecoder"] = abiDecoder
 abiDecoder.addABI(EthGallery["abi"])

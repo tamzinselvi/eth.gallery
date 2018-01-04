@@ -1,0 +1,67 @@
+@import "../app.variables.sass"
+
+eg-painting
+  .is-italic
+    font-style: italic
+
+  .like-buttons-container
+    position: relative
+
+    .like-buttons
+      margin: 24px
+      position: absolute
+      right: 0
+      flex-grow: 0
+      display: flex
+      flex-direction: column
+
+      > *
+        color: $grey-light
+
+        &.is-selected
+          color: $black
+
+      > *:nth-child(1)
+        border-radius: 32px 32px 0 0
+
+      > *:nth-child(2)
+        border-radius: 0 0 32px 32px
+
+  .hero-body
+    background-color: $dark
+    background-repeat: no-repeat
+    background-position: center
+    background-size: contain
+    image-rendering: pixelated
+    justify-content: flex-end
+    align-items: flex-end
+    height: 18rem
+    padding: 1rem !important
+    display: flex
+    flex-direction: column
+
+    .painting-price
+      position: absolute
+      align-self: flex-start
+      background-color: rgba(0,0,0,.5)
+      padding: 0 8px
+      border-radius: 16px
+      color: $white
+
+      &.is-auction-price
+        color: $green
+        margin-top: -36px
+
+    .button-container
+      display: flex
+      flex-direction: column
+
+      .button
+        .icon
+          margin-right: 0
+
+        &:nth-child(n + 1)
+          margin-top: 24px
+
+  .container
+    padding: 24px 72px

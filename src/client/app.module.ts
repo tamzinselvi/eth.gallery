@@ -9,11 +9,13 @@ import { ComponentsModule } from "./components/components.module"
 
 import { HomeComponent, HomeModule } from "./home"
 
-import { CreateAccountComponent, CreateAccountModule } from "./create-account"
+import { AccountComponent, AccountModule } from "./account"
 
 import { CreateArtComponent, CreateArtModule } from "./create-art"
 
 import { GalleryListComponent, GalleryListModule } from "./gallery-list"
+
+import { PaintingComponent, PaintingModule } from "./painting"
 
 import { SocketService, Web3Service, AccountService, PaintingService } from "./services"
 
@@ -23,8 +25,12 @@ const appRoutes: Routes = [
     component: HomeComponent,
   },
   {
-    path: "create-account",
-    component: CreateAccountComponent,
+    path: "account",
+    component: AccountComponent,
+    children: [
+      { path: '', component: AccountOverview },
+      { path: 'galleries', component: AccountGallery }
+    ],
   },
   {
     path: "create-art",
@@ -33,6 +39,10 @@ const appRoutes: Routes = [
   {
     path: "gallery",
     component: GalleryListComponent,
+  },
+  {
+    path: "painting/:id",
+    component: PaintingComponent,
   },
   // { path: "**", component: PageNotFoundComponent }
 ];
@@ -50,9 +60,10 @@ const appRoutes: Routes = [
     SharedModule,
     ComponentsModule,
     HomeModule,
-    CreateAccountModule,
+    AccountModule,
     CreateArtModule,
     GalleryListModule,
+    PaintingModule,
   ],
   providers: [
     SocketService,

@@ -1,3 +1,5 @@
+@import "../app.variables.sass"
+
 eg-gallery-list
   .card-image
     img
@@ -8,3 +10,33 @@ eg-gallery-list
       image-rendering: pixelated
       image-rendering: optimize-contrast
       -ms-interpolation-mode: nearest-neighbor
+
+  .card-content
+    padding: .75em
+
+  .is-auction-price
+    color: $green
+
+  .title-button
+    display: flex
+    flex-direction: row
+
+    .title-column
+      flex-grow: 1
+
+    .button-column
+      flex-grow: 0
+      display: flex
+      flex-direction: column
+
+      > *
+        color: $grey-light
+
+        &.is-selected
+          color: $black
+
+      > *:nth-child(1)
+        border-radius: 16px 16px 0 0
+
+      > *:nth-child(2)
+        border-radius: 0 0 16px 16px

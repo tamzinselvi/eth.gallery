@@ -1,0 +1,7 @@
+<section class="hero is-medium">
+  <eg-top-bar></eg-top-bar>
+
+  <eg-create-account *ngIf="isLoaded && !isRegistered"></eg-create-account>
+  <eg-sign-in *ngIf="isLoaded && isRegistered && !accountService.account"></eg-sign-in>
+  <eg-view-account *ngIf="isLoaded && accountService.account"></eg-view-account>
+</section>

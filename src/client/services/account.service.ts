@@ -50,6 +50,8 @@ export class AccountService {
       const onMe = (account) => {
         this.account = account
 
+        console.log(account)
+
         this.socketService.socket.removeListener("account:me", onMe)
         resolve(account)
       }
@@ -62,11 +64,15 @@ export class AccountService {
   logout(): Promise<any> {
     return new Promise((resolve, reject) => {
       const onLogout = (loggedOut) => {
-        this.loggedIn = !loggedOut
+        this.loggedIn = false
+        this.account = null
+
+        sessionStorage.removeItem("address")
+        sessionStorage.removeItem("sig")
 
         this.socketService.socket.removeListener("account:logout", onLogout)
 
-        resolve(loggedOut)
+        resolve(false)
       }
 
       this.socketService.socket.on("account:logout", onLogout)
@@ -85,14 +91,15 @@ export class AccountService {
 
       sigPromise
         .then((sig) => {
-          const onLogin = (loggedIn) => {
-            this.loggedIn = loggedIn
+          const onLogin = (account) => {
+            this.loggedIn = true
+            this.account = account
 
             sessionStorage.setItem("address", address)
             sessionStorage.setItem("sig", sig)
 
             this.socketService.socket.removeListener("account:login", onLogin)
-            resolve(loggedIn)
+            resolve(true)
           }
 
           this.socketService.socket.on("account:login", onLogin)
@@ -106,20 +113,34 @@ export class AccountService {
     return new Promise((resolve, reject) => {
       this.web3Service.signMessage("ETH.gallery")
         .then((sig) => {
-          const onRegister = (loggedIn) => {
-            this.loggedIn = loggedIn
+          const onRegister = (account) => {
+            this.loggedIn = true
+            this.account = account
 
             sessionStorage.setItem("address", address)
             sessionStorage.setItem("sig", sig)
 
             this.socketService.socket.removeListener("account:register", onRegister)
-            resolve(loggedIn)
+            resolve(true)
           }
 
           this.socketService.socket.on("account:register", onRegister)
           this.socketService.socket.emit("account:register", address, email, nickname, sig)
         })
         .catch(reject)
+    })
+  }
+
+  isRegistered(address): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const onIsRegistered = (isRegistered) => {
+        this.socketService.socket.removeListener("account:isRegistered", onIsRegistered)
+
+        resolve(isRegistered)
+      }
+
+      this.socketService.socket.on("account:isRegistered", onIsRegistered)
+      this.socketService.socket.emit("account:isRegistered", address)
     })
   }
 }

@@ -2,4 +2,5 @@
 local.db
 config.json
 build/
+content/
 node_modules/

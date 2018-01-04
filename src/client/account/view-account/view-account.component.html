@@ -1,0 +1,43 @@
+<div class="columns">
+  <div class="column is-one-third">
+    <nav class="panel">
+      <a class="panel-block is-active">
+        <span class="panel-icon">
+          <i class="fa fa-book"></i>
+        </span>
+        Account
+      </a>
+      <a class="panel-block is-active">
+        <span class="panel-icon">
+          <i class="fa fa-book"></i>
+        </span>
+        Gallery
+      </a>
+      <a class="panel-block">
+        <span class="panel-icon">
+          <i class="fa fa-book"></i>
+        </span>
+        Offers (coming soon!)
+      </a>
+      <a class="panel-block">
+        <span class="panel-icon">
+          <i class="fa fa-book"></i>
+        </span>
+        Messages (coming soon!)
+      </a>
+      <div class="panel-block">
+        <button class="button is-link is-outlined is-fullwidth" (click)="signOut()">
+          Sign out
+        </button>
+      </div>
+    </nav>
+  </div>
+  <div class="column">
+    <div class="has-text-centered">
+      <h1 class="title">
+        {{ account.nickname }}
+        <span *ngIf="account.nicknameOccurrence !== 1">#{{ account.nicknameOccurrence }}</span>
+      </h1>
+    </div>
+  </div>
+</div>

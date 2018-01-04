@@ -3,7 +3,11 @@ import "./pixel-editor.component.sass"
 
 import { FormGroup, FormControl, Validators } from "@angular/forms"
 
-import { Component, ElementRef, Inject, Input, OnInit, ViewChild } from '@angular/core'
+import { saveAs } from "file-saver"
+
+import { HostListener, Component, ElementRef, Inject, Input, OnInit, ViewChild } from '@angular/core'
+
+import { Location } from "@angular/common"
 
 import { Router } from "@angular/router"
 
@@ -22,35 +26,55 @@ export class PixelEditorComponent implements OnInit {
   private form: FormGroup
   private canvas
   private mouseDown = false
+  private mouseButton
   private scale = 10
   private offset = [0, 0]
   private lastPos
   private mode = "EDIT"
   private rerender = true
   private colorInput
+  private colorInput2
   private pixelColor = "#000000"
+  private pixelColor2 = "#ffffff"
   private width = 64
   private height = 64
   private uploadModalActive = false
+  private confirmationModalActive = false
   private buffer
   private ctx
   private imageCanvas
   private imageContext
   private uploading = false
+  private pencilWidth = 0
 
   constructor(
     @Inject(ElementRef) private elementRef: ElementRef,
     @Inject(Router) public router: Router,
     @Inject(AccountService) public accountService: AccountService,
     @Inject(Web3Service) private web3Service: Web3Service,
+    @Inject(Location) private location,
   ) {
     this.buffer = new Array(this.width * this.height)
     this.buffer.fill("#ffffff")
   }
 
+  @HostListener('document:keyup', ['$event'])
+  onKeyUp(ev: KeyboardEvent) {
+    if (ev.keyCode === 49) {
+      this.mode = "EDIT"
+    }
+    else if (ev.keyCode === 50) {
+      this.mode = "PAINT"
+    }
+    else if (ev.keyCode === 51) {
+      this.mode = "MOVE"
+    }
+  }
+
   ngOnInit() {
     this.canvas = this.elementRef.nativeElement.querySelector("canvas")
-    this.colorInput = this.elementRef.nativeElement.querySelector("input[type='color']")
+    this.colorInput = this.elementRef.nativeElement.querySelector("input[name='color1'][type='color']")
+    this.colorInput2 = this.elementRef.nativeElement.querySelector("input[name='color2'][type='color']")
     this.ctx = this.canvas.getContext("2d")
 
     this.imageCanvas = document.createElement("canvas")
@@ -66,6 +90,29 @@ export class PixelEditorComponent implements OnInit {
 
     this.initializeForm()
     this.initializeCanvas()
+  }
+
+  fileImport($event) {
+    const pad = (s, n) => {
+      return "0".repeat(n - s.length) + s
+    }
+
+    var reader = new FileReader()
+    reader.onload = (e) => {
+      const dataurl = e.target["result"]
+      const image = document.createElement("img")
+      image.onload = (e) => {
+        this.imageContext.drawImage(image, 0, 0, 64, 64)
+        const imageData = this.imageContext.getImageData(0, 0, 64, 64).data
+
+        for (let i = 0; i < imageData.length; i += 4) {
+          this.buffer[i / 4] = `#${pad(imageData[i].toString(16), 2)}${pad(imageData[i + 1].toString(16), 2)}${pad(imageData[i + 2].toString(16), 2)}`
+        }
+        this.rerender = true
+      }
+      image.src = dataurl
+    }
+    reader.readAsDataURL($event.target.files[0])
   }
 
   upload() {
@@ -86,24 +133,18 @@ export class PixelEditorComponent implements OnInit {
 
     const data = Uint8Array.from(
       this.buffer.map(
-        h => [parseInt(h.substr(1, 2), 16), parseInt(h.substr(3, 2), 16), parseInt(h.substr(5, 2), 16), 255]
+        h => [parseInt(h.substr(1, 2), 16), parseInt(h.substr(3, 2), 16), parseInt(h.substr(5, 2), 16)]
       ).reduce(
         (a, b) => a.concat(b), []
       )
     )
 
-    console.log(data)
-
     window["libflif"].encode({
       frames: [{
         data: data.buffer,
-        depth: 24,
         width: this.width,
         height: this.height,
       }],
-      options: {
-        alpha: false,
-      }
     }).then((encodedBuffer) => {
       const hB32 = []
 
@@ -117,13 +158,46 @@ export class PixelEditorComponent implements OnInit {
         hB32.push("0x" + pad(splice.reduce((p, c) => p + c, ""), 64))
       }
 
-      this.web3Service.ethGallery.createPainting.sendTransaction(hB32, hBLength, this.form.controls.name.value, { value: hBLength * GWEI }, (err, res) => {
-        this.form.reset()
+      this.web3Service.ethGallery.createPainting.sendTransaction(hB32, hBLength, this.form.controls.name.value, this.form.controls.description.value, { value: hBLength * GWEI }, (err, res) => {
         this.uploading = false
+
+        if (err) {
+          return
+        }
+
+        this.form.reset()
         this.uploadModalActive = false
+        this.confirmationModalActive = true
       })
     }).catch(err => {
       this.uploading = false
+    })
+  }
+
+  clear() {
+    this.buffer = this.buffer.map(() => "#ffffff")
+    this.rerender = true
+  }
+
+  download() {
+    const data = Uint8Array.from(
+      this.buffer.map(
+        h => [parseInt(h.substr(1, 2), 16), parseInt(h.substr(3, 2), 16), parseInt(h.substr(5, 2), 16), 255]
+      ).reduce(
+        (a, b) => a.concat(b), []
+      )
+    )
+
+    const imageData = this.imageContext.createImageData(this.width, this.height)
+
+    for (let i = 0; i < imageData.data.length; i++) {
+      imageData.data[i] = data[i]
+    }
+
+    this.imageContext.putImageData(imageData, 0, 0)
+
+    this.imageCanvas.toBlob((blob) => {
+      saveAs(blob, "creation.png")
     })
   }
 
@@ -132,10 +206,19 @@ export class PixelEditorComponent implements OnInit {
       this.pixelColor = this.colorInput.value.toString()
     })
 
+    this.colorInput2.addEventListener("change" , (e) => {
+      this.pixelColor2 = this.colorInput2.value.toString()
+    })
+
+    this.canvas.addEventListener("contextmenu", (e) => {
+      e.preventDefault()
+    })
+
     this.canvas.addEventListener("mousedown", (e) => {
       e.preventDefault()
 
       this.mouseDown = true
+      this.mouseButton = e.button
 
       if (this.mode === "EDIT") {
         this.draw(e)
@@ -225,12 +308,24 @@ export class PixelEditorComponent implements OnInit {
       const x = Math.floor((e.offsetX - left) / this.scale)
       const y = Math.floor((e.offsetY - bottom) / this.scale)
 
-      this.buffer[x + y * this.width] = this.pixelColor
+      this.buffer[x + y * this.width] = this.mouseButton === 2 ? this.pixelColor2 : this.pixelColor
 
-      this.imageContext.beginPath()
-      this.imageContext.rect(x, y, 1, 1)
-      this.imageContext.fillStyle = this.pixelColor
-      this.imageContext.fill()
+      for (let i = 0; i < this.pencilWidth; i++) {
+        [
+          Math.max(0, x - (i + 1)) + y * this.width, // left
+          Math.min(this.width - 1, x + (i + 1)) + y * this.width, // right
+          x + Math.max(0, (y - (i + 1))) * this.width, // top
+          x + Math.min(this.height - 1, (y + (i + 1))) * this.width, // bottom
+          Math.max(0, x - (i + 1)) + Math.max(0, (y - (i + 1))) * this.width, // top-left
+          Math.min(this.width - 1, x + (i + 1)) + Math.max(0, (y - (i + 1))) * this.width, // top-right
+          Math.max(0, x - (i + 1)) + Math.min(this.height - 1, (y + (i + 1))) * this.width, // bottom-left
+          Math.min(this.width - 1, x + (i + 1)) + Math.min(this.height - 1, (y + (i + 1))) * this.width, // bottom-right
+        ].forEach((index) => {
+          if (this.buffer[index]) {
+            this.buffer[index] = this.mouseButton === 2 ? this.pixelColor2 : this.pixelColor
+          }
+        })
+      }
 
       this.rerender = true
     }
@@ -246,7 +341,7 @@ export class PixelEditorComponent implements OnInit {
       const x = Math.floor((e.offsetX - left) / this.scale)
       const y = Math.floor((e.offsetY - bottom) / this.scale)
 
-      this.paintHelper(x, y, this.buffer[x + y * this.width], this.pixelColor)
+      this.paintHelper(x, y, this.buffer[x + y * this.width], this.mouseButton === 2 ? this.pixelColor2 : this.pixelColor)
       this.rerender = true
     }
   }
@@ -319,6 +414,7 @@ export class PixelEditorComponent implements OnInit {
   private initializeForm(): void {
     this.form = new FormGroup({
       name: new FormControl("", Validators.required),
+      description: new FormControl(""),
     })
   }
 }

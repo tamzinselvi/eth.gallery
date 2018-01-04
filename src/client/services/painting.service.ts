@@ -22,4 +22,28 @@ export class PaintingService {
       this.socketService.socket.emit("painting:list", params)
     })
   }
+
+  get(params): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const onGet = (paintings) => {
+        this.socketService.socket.removeListener("painting:get", onGet)
+        resolve(paintings)
+      }
+
+      this.socketService.socket.on("painting:get", onGet)
+      this.socketService.socket.emit("painting:get", params)
+    })
+  }
+
+  vote(params): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const onVote = (vote) => {
+        this.socketService.socket.removeListener("painting:vote", onVote)
+        resolve(vote)
+      }
+
+      this.socketService.socket.on("painting:vote", onVote)
+      this.socketService.socket.emit("painting:vote", params)
+    })
+  }
 }

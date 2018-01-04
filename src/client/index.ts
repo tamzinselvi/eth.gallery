@@ -1,14 +1,15 @@
 import "./polyfills"
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/share';
+import 'rxjs/add/operator/map'
+import 'rxjs/add/operator/share'
+import "rxjs/add/operator/debounceTime"
 
 import "./fonts"
 
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { enableProdMode } from '@angular/core'
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic'
 
-import { AppModule } from './app.module';
+import { AppModule } from './app.module'
 
-platformBrowserDynamic().bootstrapModule(AppModule);
+platformBrowserDynamic().bootstrapModule(AppModule)
 
 export default {}

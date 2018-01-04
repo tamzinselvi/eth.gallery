@@ -1,22 +1,137 @@
 <section class="hero is-medium">
   <eg-top-bar></eg-top-bar>
 
-  <div class="container">
-    <div class="columns is-multiline">
-      <div class="column is-one-quarter" *ngFor="let painting of paintings">
-        <div class="card">
-          <div class="card-image">
-            <figure class="image is-1by1">
-              <img [src]="painting.url">
-            </figure>
+  <section class="section">
+    <div class="container">
+      <nav class="navbar is-transparent">
+        <div id="navbarExampleTransparentExample" class="navbar-menu">
+          <div class="navbar-start">
+            <div class="navbar-item has-dropdown is-hoverable">
+              <button class="button" (click)="togglePopularitySort()">
+                <span>Popularity</span>
+                <span class="icon is-small" *ngIf="sort.popularity !== null">
+                  <i class="fa fa-angle-down" aria-hidden="true" *ngIf="sort.popularity === 'DESC'"></i>
+                  <i class="fa fa-angle-up" aria-hidden="true" *ngIf="sort.popularity === 'ASC'"></i>
+                </span>
+              </button>
+              <button class="button" (click)="toggleAgeSort()">
+                <span>Age</span>
+                <span class="icon is-small" *ngIf="sort.age !== null">
+                  <i class="fa fa-angle-down" aria-hidden="true" *ngIf="sort.age === 'DESC'"></i>
+                  <i class="fa fa-angle-up" aria-hidden="true" *ngIf="sort.age === 'ASC'"></i>
+                </span>
+              </button>
+              <button class="button" (click)="toggleNameSort()">
+                <span>Name</span>
+                <span class="icon is-small" *ngIf="sort.name !== null">
+                  <i class="fa fa-angle-down" aria-hidden="true" *ngIf="sort.name === 'DESC'"></i>
+                  <i class="fa fa-angle-up" aria-hidden="true" *ngIf="sort.name === 'ASC'"></i>
+                </span>
+              </button>
+              <button class="button" (click)="togglePriceSort()">
+                <span>Market price</span>
+                <span class="icon is-small" *ngIf="sort.price !== null">
+                  <i class="fa fa-angle-down" aria-hidden="true" *ngIf="sort.price === 'DESC'"></i>
+                  <i class="fa fa-angle-up" aria-hidden="true" *ngIf="sort.price === 'ASC'"></i>
+                </span>
+              </button>
+              <button class="button" (click)="toggleAuctionPriceSort()">
+                <span>Auction price</span>
+                <span class="icon is-small" *ngIf="sort.auctionPrice !== null">
+                  <i class="fa fa-angle-down" aria-hidden="true" *ngIf="sort.auctionPrice === 'DESC'"></i>
+                  <i class="fa fa-angle-up" aria-hidden="true" *ngIf="sort.auctionPrice === 'ASC'"></i>
+                </span>
+              </button>
+            </div>
           </div>
-          <div class="card-content">
-            <p class="title is-4">{{ painting.name }}</p>
-            <p class="subtitle is-6">{{ painting.owner }}</p>
+        </div>
+      </nav>
+
+
+      <div class="columns is-multiline">
+        <div class="column is-one-quarter" *ngFor="let painting of paintings">
+          <div class="card">
+            <div class="card-image">
+              <a [routerLink]="['/painting', painting.id]">
+                <figure class="image is-1by1">
+                  <img [src]="painting.url">
+                </figure>
+              </a>
+            </div>
+
+            <div class="card-content">
+              <div class="title-button">
+                <div class="title-column">
+                  <p class="title is-4">
+                    <a [routerLink]="['/painting', painting.id]">
+                      {{ painting.name }}
+                      <span *ngIf="painting.nameOccurrence !== 1">#{{ painting.nameOccurrence }}</span>
+                    </a>
+                  </p>
+                  <div class="subtitle is-6">
+                    <p *ngIf="painting.creator">
+                      <span>created by <a [routerLink]="['/artist', painting.creator.id]">{{ painting.creator.nickname }}</a></span>
+                      <span *ngIf="painting.creator.nicknameOccurrence !== 1">#{{ painting.creator.nicknameOccurrence}}</span>
+                    </p>
+                    <p *ngIf="painting.owner">
+                      <span>owned by <a [routerLink]="['/artist', painting.owner.id]">{{ painting.owner.nickname }}</a></span>
+                      <span *ngIf="painting.owner.nicknameOccurrence !== 1">#{{ painting.owner.nicknameOccurrence}}</span>
+                    </p>
+                  </div>
+                </div>
+                <div class="button-column">
+                  <a class="button is-small" [ngClass]="{ 'is-selected': painting.vote === true }" (click)="vote(painting, true)">
+                    <span class="icon">
+                      <i class="fa fa-thumbs-up fa-lg"></i>
+                    </span>
+                  </a>
+                  <a class="button is-small" [ngClass]="{ 'is-selected': painting.vote === false }" (click)="vote(painting, false)">
+                    <span class="icon">
+                      <i class="fa fa-thumbs-down fa-lg"></i>
+                    </span>
+                  </a>
+                </div>
+              </div>
+
+              <p class="is-auction-price is-6" *ngIf="painting.auctionPrice">
+                <span class="icon">
+                  <i class="fa fa-sm icon-eth"></i>
+                </span>
+                <span>{{ painting.displayAuctionPrice }}</span>
+              </p>
+
+              <p *ngIf="painting.price" class="is-6">
+                <span class="icon">
+                  <i class="fa fa-sm icon-eth"></i>
+                </span>
+                <span>{{ painting.displayPrice }}</span>
+              </p>
+            </div>
+            <footer class="card-footer" *ngIf="painting.owner.id !== accountService.account.id">
+              <a class="card-footer-item" *ngIf="painting.auctionPrice" (click)="buy(painting)">Buy</a>
+              <a class="card-footer-item" (click)="offer(painting)">Make Offer</a>
+            </footer>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
+  <section class="section" *ngIf="pages > 1">
+    <div class="container">
+      <nav class="pagination is-centered">
+        <a class="pagination-previous" (click)="gotoPage(page - 1)" [style.visibility]="page !== 1 ? 'visible' : 'hidden'">Previous</a>
+        <a class="pagination-next" (click)="gotoPage(page + 1)" [style.visibility]="page !== pages ? 'visible' : 'hidden'">Next page</a>
+        <ul class="pagination-list">
+          <li><a class="pagination-link" (click)="gotoPage(1)" *ngIf="page > 2">1</a></li>
+          <li><span class="pagination-ellipsis" *ngIf="page > 3">&hellip;</span></li>
+          <li><a class="pagination-link" (click)="gotoPage(page - 1)" *ngIf="page !== 1">{{ page - 1}}</a></li>
+          <li><a class="pagination-link is-current">{{ page }}</a></li>
+          <li><a class="pagination-link" (click)="gotoPage(page + 1)" *ngIf="page !== pages">{{ page + 1}}</a></li>
+          <li><span class="pagination-ellipsis" *ngIf="page < (pages - 2)">&hellip;</span></li>
+          <li><a class="pagination-link" (click)="gotoPage(pages)" *ngIf="page < (pages - 1)">{{ pages }}</a></li>
+        </ul>
+      </nav>
+    </div>
+  </section>
 </section>

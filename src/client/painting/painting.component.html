@@ -1,0 +1,129 @@
+<div class="modal" [ngClass]="{ 'is-active': sellModalActive }">
+  <form (ngSubmit)="auction()" [formGroup]="form">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <section class="modal-card-body">
+        <div class="field">
+          <label class="label" for="name">Starting price (ETH)</label>
+          <div class="control has-icons-right">
+            <input class="input" required type="number" [ngClass]="{ 'is-danger': form.controls.startingPrice.touched && !form.controls.startingPrice.valid }" name="startingPrice" placeholder="e.g. 0.00123" formControlName="startingPrice">
+            <span class="icon is-small is-right" [style.visibility]="form.controls.startingPrice.touched && !form.controls.startingPrice.valid ? 'visible' : 'hidden'">
+              <i class="fa fa-warning"></i>
+            </span>
+          </div>
+
+          <p class="help is-danger" [style.visibility]="form.controls.startingPrice.touched && !form.controls.startingPrice.valid ? 'visible' : 'hidden'">
+            Starting price is required
+          </p>
+        </div>
+        <div class="field">
+          <label class="label" for="name">Ending price (ETH)</label>
+          <div class="control has-icons-right">
+            <input class="input" required type="number" [ngClass]="{ 'is-danger': form.controls.endingPrice.touched && !form.controls.endingPrice.valid }" name="endingPrice" placeholder="e.g. 0.001" formControlName="endingPrice">
+            <span class="icon is-small is-right" [style.visibility]="form.controls.endingPrice.touched && !form.controls.endingPrice.valid ? 'visible' : 'hidden'">
+              <i class="fa fa-warning"></i>
+            </span>
+          </div>
+
+          <p class="help is-danger" [style.visibility]="form.controls.endingPrice.touched && !form.controls.endingPrice.valid ? 'visible' : 'hidden'">
+            Ending price is required
+          </p>
+        </div>
+        <div class="field">
+          <label class="label" for="name">Duration (Blocks)</label>
+          <div class="control has-icons-right">
+            <input class="input" required type="number" [ngClass]="{ 'is-danger': form.controls.duration.touched && !form.controls.duration.valid }" name="duration" placeholder="e.g. 40500 (~1 week)" formControlName="duration">
+            <span class="icon is-small is-right" [style.visibility]="form.controls.duration.touched && !form.controls.duration.valid ? 'visible' : 'hidden'">
+              <i class="fa fa-warning"></i>
+            </span>
+          </div>
+
+          <p class="help is-danger" [style.visibility]="form.controls.duration.touched && !form.controls.duration.valid ? 'visible' : 'hidden'">
+            Duration is required
+          </p>
+        </div>
+      </section>
+      <footer class="modal-card-foot">
+        <input type="submit" class="button is-success" value="Auction" [disabled]="selling">
+        <button class="button" (click)="sellModalActive = false" [disabled]="selling">Cancel</button>
+      </footer>
+    </div>
+  </form>
+</div>
+
+<section class="hero is-medium">
+  <eg-top-bar></eg-top-bar>
+
+  <section class="hero is-medium is-primary is-bold" *ngIf="!!painting">
+    <div class="hero-body" [style.background-image]="'url(' + painting.url + ')'">
+      <p class="painting-price is-auction-price is-6" *ngIf="painting.auctionPrice">
+        <span class="icon">
+          <i class="fa fa-sm icon-eth"></i>
+        </span>
+        <span>{{ painting.displayAuctionPrice }}</span>
+      </p>
+      <p *ngIf="painting.price" class="painting-price is-6">
+        <span class="icon">
+          <i class="fa fa-sm icon-eth"></i>
+        </span>
+        <span>{{ painting.displayPrice }}</span>
+      </p>
+      <div class="button-container">
+        <a class="button is-success" *ngIf="!painting.auctionPrice && painting.owner.id === accountService.account.id" (click)="sellModalActive = true">
+          <span class="icon">
+            <i class="fa fa-sm icon-eth"></i>
+          </span>
+          Auction
+        </a>
+        <a class="button is-success" *ngIf="painting.auctionPrice && painting.owner.id !== accountService.account.id" (click)="buy(painting)">
+          <span class="icon">
+            <i class="fa fa-sm icon-eth"></i>
+          </span>
+          Buy
+        </a>
+        <a class="button" *ngIf="painting.owner.id !== accountService.account.id">
+          <span class="icon">
+            <i class="fa fa-sm icon-eth"></i>
+          </span>
+          Make Offer
+        </a>
+        <a class="button is-link">Edit</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="like-buttons-container">
+    <div class="like-buttons">
+      <a class="button is-medium" [ngClass]="{ 'is-selected': painting.vote === true }" (click)="vote(painting, true)">
+        <span class="icon">
+          <i class="fa fa-thumbs-up fa-lg"></i>
+        </span>
+      </a>
+      <a class="button is-medium" [ngClass]="{ 'is-selected': painting.vote === false }" (click)="vote(painting, false)">
+        <span class="icon">
+          <i class="fa fa-thumbs-down fa-lg"></i>
+        </span>
+      </a>
+    </div>
+  </div>
+
+  <div class="container has-text-centered" *ngIf="!!painting">
+    <p class="title is-4">
+      {{ painting.name }}
+      <span *ngIf="painting.nameOccurrence !== 1">#{{ painting.nameOccurrence }}</span>
+    </p>
+    <div class="subtitle is-6">
+      <p *ngIf="painting.creator">
+        <span>created by <a [routerLink]="['/artist', painting.creator.id]">{{ painting.creator.nickname }}</a></span>
+        <span *ngIf="painting.creator.nicknameOccurrence !== 1">#{{ painting.creator.nicknameOccurrence}}</span>
+      </p>
+      <p *ngIf="painting.owner">
+        <span>owned by <a [routerLink]="['/artist', painting.owner.id]">{{ painting.owner.nickname }}</a></span>
+        <span *ngIf="painting.owner.nicknameOccurrence !== 1">#{{ painting.owner.nicknameOccurrence}}</span>
+      </p>
+    </div>
+    <p class="is-6 is-italic">
+      ❝ {{ painting.description }} ❞
+    </p>
+  </div>
+</section>

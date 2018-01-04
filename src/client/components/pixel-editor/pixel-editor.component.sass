@@ -4,6 +4,27 @@ eg-pixel-editor
   display: flex
   flex-direction: column
 
+  .is-keyboard-shortcut
+    position: absolute
+    bottom: 0
+
+  .navbar-item.is-flex-column .icon
+    padding-bottom: 8px
+
+  .colors
+    display: flex
+    justify-content: center
+    align-items: center
+    cursor: default
+
+    input[type='color']
+      cursor: pointer
+      width: 36px
+      height: 24px
+
   canvas
     background-color: $dark
     flex-grow: 1
+
+  .is-flex-column
+    flex-direction: column

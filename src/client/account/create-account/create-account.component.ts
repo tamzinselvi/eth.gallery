@@ -5,7 +5,7 @@ import { Component, Inject } from '@angular/core'
 
 import { Router } from "@angular/router"
 
-import { AccountService, Web3Service } from "../services"
+import { AccountService, Web3Service } from "../../services"
 
 @Component({
   selector: 'eg-create-account',
@@ -26,6 +26,6 @@ export class CreateAccountComponent {
 
   submit() {
     this.accountService.register(this.address, this.email, this.nickname)
-      .then(() => this.router.navigate(["/"]))
+      .then(() => this.router.navigate(["/account"]))
   }
 }
