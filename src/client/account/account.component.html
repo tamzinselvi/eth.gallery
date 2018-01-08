@@ -1,7 +1,9 @@
 <section class="hero is-medium">
   <eg-top-bar></eg-top-bar>
 
-  <eg-create-account *ngIf="isLoaded && !isRegistered"></eg-create-account>
-  <eg-sign-in *ngIf="isLoaded && isRegistered && !accountService.account"></eg-sign-in>
-  <eg-view-account *ngIf="isLoaded && accountService.account"></eg-view-account>
+  <eg-get-metamask *ngIf="isLoaded && !web3Service.web3"></eg-get-metamask>
+  <eg-unlock-metamask *ngIf="isLoaded && web3Service.web3 && !web3Service.web3.eth.accounts.length"></eg-unlock-metamask>
+  <eg-create-account *ngIf="isLoaded && web3Service.web3 && web3Service.web3.eth.accounts.length && !isRegistered"></eg-create-account>
+  <eg-sign-in *ngIf="isLoaded && web3Service.web3 && web3Service.web3.eth.accounts.length && isRegistered && !accountService.account"></eg-sign-in>
+  <eg-view-account *ngIf="isLoaded && web3Service.web3 && web3Service.web3.eth.accounts.length && accountService.account"></eg-view-account>
 </section>

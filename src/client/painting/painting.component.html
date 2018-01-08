@@ -69,30 +69,30 @@
         <span>{{ painting.displayPrice }}</span>
       </p>
       <div class="button-container">
-        <a class="button is-success" *ngIf="!painting.auctionPrice && painting.owner.id === accountService.account.id" (click)="sellModalActive = true">
+        <a class="button is-success" *ngIf="!painting.auctionPrice && accountService.account && painting.owner.id === accountService.account.id" (click)="sellModalActive = true">
           <span class="icon">
             <i class="fa fa-sm icon-eth"></i>
           </span>
           Auction
         </a>
-        <a class="button is-success" *ngIf="painting.auctionPrice && painting.owner.id !== accountService.account.id" (click)="buy(painting)">
+        <a class="button is-success" *ngIf="painting.auctionPrice && accountService.account && painting.owner.id !== accountService.account.id" (click)="buy(painting)">
           <span class="icon">
             <i class="fa fa-sm icon-eth"></i>
           </span>
           Buy
         </a>
-        <a class="button" *ngIf="painting.owner.id !== accountService.account.id">
+        <a class="button" *ngIf="accountService.account && painting.owner.id !== accountService.account.id">
           <span class="icon">
             <i class="fa fa-sm icon-eth"></i>
           </span>
           Make Offer
         </a>
-        <a class="button is-link">Edit</a>
+        <a *ngIf="accountService.account" class="button is-link">Edit</a>
       </div>
     </div>
   </section>
 
-  <div class="like-buttons-container">
+  <div class="like-buttons-container" *ngIf="accountService.account">
     <div class="like-buttons">
       <a class="button is-medium" [ngClass]="{ 'is-selected': painting.vote === true }" (click)="vote(painting, true)">
         <span class="icon">

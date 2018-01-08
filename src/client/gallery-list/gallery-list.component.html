@@ -79,7 +79,7 @@
                     </p>
                   </div>
                 </div>
-                <div class="button-column">
+                <div class="button-column" *ngIf="accountService.account">
                   <a class="button is-small" [ngClass]="{ 'is-selected': painting.vote === true }" (click)="vote(painting, true)">
                     <span class="icon">
                       <i class="fa fa-thumbs-up fa-lg"></i>
@@ -107,7 +107,7 @@
                 <span>{{ painting.displayPrice }}</span>
               </p>
             </div>
-            <footer class="card-footer" *ngIf="painting.owner.id !== accountService.account.id">
+            <footer class="card-footer" *ngIf="accountService.account && painting.owner.id !== accountService.account.id">
               <a class="card-footer-item" *ngIf="painting.auctionPrice" (click)="buy(painting)">Buy</a>
               <a class="card-footer-item" (click)="offer(painting)">Make Offer</a>
             </footer>

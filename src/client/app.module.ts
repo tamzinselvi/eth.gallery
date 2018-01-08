@@ -27,10 +27,6 @@ const appRoutes: Routes = [
   {
     path: "account",
     component: AccountComponent,
-    children: [
-      { path: '', component: AccountOverview },
-      { path: 'galleries', component: AccountGallery }
-    ],
   },
   {
     path: "create-art",

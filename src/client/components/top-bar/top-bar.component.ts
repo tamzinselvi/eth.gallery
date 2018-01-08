@@ -9,7 +9,7 @@ import { FormControl } from "@angular/forms"
 
 import { ActivatedRoute, Router, Params } from "@angular/router"
 
-import { AccountService } from "../../services"
+import { AccountService, Web3Service } from "../../services"
 
 @Component({
   selector: 'eg-top-bar',
@@ -23,7 +23,8 @@ export class TopBarComponent implements OnInit {
   constructor(
     @Inject(ActivatedRoute) private activatedRoute,
     @Inject(Router) public router: Router,
-    @Inject(AccountService) public accountService: AccountService
+    @Inject(AccountService) public accountService: AccountService,
+    @Inject(Web3Service) public web3Service: Web3Service,
   ) {}
 
   ngOnInit() {
