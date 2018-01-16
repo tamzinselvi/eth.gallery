@@ -1,11 +1,13 @@
 const template = require("./account.component.html")
 import "./account.component.sass"
 
-import { Rx } from "rx"
+import * as _ from "lodash"
 
-import { Component, Inject, OnInit, ChangeDetectorRef } from '@angular/core'
+import { Component, Inject, OnDestroy, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core'
 
 import { Router } from "@angular/router"
+
+import { CreateAccountComponent } from "./create-account/create-account.component"
 
 import { AccountService, Web3Service } from "../services"
 
@@ -13,10 +15,13 @@ import { AccountService, Web3Service } from "../services"
   selector: 'eg-account',
   template: template,
 })
-export class AccountComponent implements OnInit {
+export class AccountComponent implements OnInit, OnDestroy {
   private address
   private isRegistered
   private isLoaded = false
+  private watchInterval
+  private lastAccounts
+  @ViewChild("createAccount") createAccountComponent: CreateAccountComponent
 
   constructor(
     @Inject(AccountService) private accountService,
@@ -26,21 +31,46 @@ export class AccountComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    Rx.Observable
-      .ofObjectChanges(this.web3Service.web3.eth.accounts)
-      .subscribe(() => this.changeDetectorRef.detectChanges())
+    this.watchInterval = setInterval(() => {
+      if (this.web3Service.web3 && this.web3Service.web3.eth) {
+        this.web3Service.web3.eth.getAccounts((err, accounts) => {
+          if (err) {
+            return
+          }
+
+          if (!_.isEqual(this.lastAccounts, accounts)) {
+            this.lastAccounts = accounts
+            this.web3Service.web3.eth.defaultAccount = _.first(accounts)
+
+            this.update()
+
+            console.log("HUH", this)
+
+            if (this.createAccountComponent) {
+              this.createAccountComponent.update()
+            }
+          }
+        })
+      }
+    }, 1000)
 
     if (this.web3Service.web3) {
-      this.address = this.web3Service.getAddress()
-
-      this.accountService.isRegistered(this.address)
-        .then(isRegistered => {
-          this.isRegistered = isRegistered
-          this.isLoaded = true
-        })
+      this.update()
     }
     else {
       this.isLoaded = true
     }
+  }
+
+  update() {
+    this.accountService.isRegistered(this.web3Service.web3.eth.defaultAccount)
+      .then(isRegistered => {
+        this.isRegistered = isRegistered
+        this.isLoaded = true
+      })
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.watchInterval)
   }
 }

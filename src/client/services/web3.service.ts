@@ -56,6 +56,6 @@ export class Web3Service {
   }
 
   getAddress(): string {
-    return this.web3.eth.accounts[0]
+    return this.web3.eth.defaultAccount
   }
 }

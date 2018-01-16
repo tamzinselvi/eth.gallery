@@ -5,7 +5,7 @@ import BigNumber from "bignumber.js"
 export const registerPaintingListeners = (socket) => {
   socket.on("painting:list", (params) => {
     let blockNumber = new BigNumber(web3.eth.blockNumber)
-    paintingService.list(params.page, params.pageSize, params.search, params.sort, socket.request.session.account)
+    paintingService.list(params.page, params.pageSize, params.search, params.sort, socket.request.session.account, params.id)
       .then(({ count, rows }) => ({
         count,
         rows: rows.map((painting) => {

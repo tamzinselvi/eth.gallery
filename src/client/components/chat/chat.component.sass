@@ -1,0 +1,97 @@
+@import "../../app.variables.sass"
+
+eg-chat
+  position: fixed
+  z-index: 10000
+  bottom: 0
+  right: 0
+
+  .chat-window
+    height: 75vh
+    width: 800px
+    display: flex
+    flex-direction: column
+
+    .chat-top-bar
+      height: 1.5em
+      background-color: $dark
+      cursor: pointer
+      border-radius: .5em .5em 0 0
+
+      &:hover
+        background-color: $grey-light
+
+    .chat-body
+      display: flex
+      flex-direction: row
+      flex-grow: 1
+
+      .users-list
+        background-color: $dark
+        color: $white
+
+        .media
+          padding: .5em
+          cursor: pointer
+
+      .body
+        flex-grow: 1
+        display: flex
+        flex-direction: column
+
+        .input-container
+          display: flex
+          flex-direction: row
+          align-items: center
+
+          .icon
+            width: 2.25em
+            color: $link
+
+            &:hover
+              color: $dark
+
+        .messages
+          flex-grow: 1
+          background-color: $white
+          padding: 12px
+
+          .from, .to
+            position: relative
+            margin-bottom: 24px
+
+            .message
+              display: inline-block
+              border-radius: 8px
+              padding: 12px
+              text-align: left
+              width: 75%
+
+          .from
+            .message
+              background-color: $white-ter
+              color: $dark
+
+          .to
+            text-align: right
+            .message
+              background-color: $link
+              color: $white
+
+  .chat-button
+    position: relative
+    margin-bottom: 1em
+    margin-right: 1em
+
+    .button
+      border-radius: 290486px
+
+    .notifications
+      position: absolute
+      top: 0
+      left: 0
+      background-color: $dark
+      border-radius: 8px
+      color: $white
+      padding: 0 4px
+      transform: translate(-25%, -25%)

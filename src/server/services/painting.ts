@@ -98,6 +98,7 @@ class PaintingService {
     search: string = null,
     sort = null,
     voterId = null,
+    ownerId = null,
   ): Promise<any> {
     if (sort === null) {
       sort = {
@@ -129,6 +130,10 @@ class PaintingService {
           },
         },
       ],
+    }
+
+    if (ownerId) {
+      query.where["ownerId"] = ownerId 
     }
 
     if (search) {

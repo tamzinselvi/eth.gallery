@@ -33,6 +33,10 @@ const appRoutes: Routes = [
     component: CreateArtComponent,
   },
   {
+    path: "gallery/:id",
+    component: GalleryListComponent,
+  },
+  {
     path: "gallery",
     component: GalleryListComponent,
   },

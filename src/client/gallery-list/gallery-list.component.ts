@@ -13,6 +13,8 @@ import { ActivatedRoute, Params, Router } from "@angular/router"
 
 import { AccountService, PaintingService, Web3Service } from "../services"
 
+import { Observable } from "rxjs/Observable"
+
 import BigNumber from "bignumber.js"
 
 @Component({
@@ -23,6 +25,7 @@ export class GalleryListComponent implements OnInit {
   private page: number
   private search: string
   private pages: number
+  private id
   private sort
   private paintings
 
@@ -38,9 +41,13 @@ export class GalleryListComponent implements OnInit {
   ngOnInit() {
     this.sort = {}
 
-    this.activatedRoute.queryParams.subscribe((queryParams: Params) => {
+    Observable.zip(
+      this.activatedRoute.queryParams,
+      this.activatedRoute.params,
+    ).subscribe(([queryParams, params]) => {
       this.page = parseInt(queryParams["page"] || 1)
       this.search = queryParams["search"] || null
+      this.id = params["id"]
       this.sort["popularity"] = queryParams["sort.popularity"] || null
       this.sort["age"] = queryParams["sort.age"] || null
       this.sort["name"] = queryParams["sort.name"] || null
@@ -52,7 +59,7 @@ export class GalleryListComponent implements OnInit {
   }
 
   private update() {
-    this.paintingService.list({ page: this.page, pageSize: 16, search: this.search, sort: this.sort })
+    this.paintingService.list({ page: this.page, pageSize: 16, search: this.search, sort: this.sort, id: this.id })
       .then((result) => {
         this.paintings = result.rows.map(painting => {
           painting.displayPrice = this.web3Service.web3.fromWei(painting.price, "ether")

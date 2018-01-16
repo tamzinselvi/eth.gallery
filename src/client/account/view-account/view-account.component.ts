@@ -5,7 +5,7 @@ import { Component, Inject } from '@angular/core'
 
 import { Router } from "@angular/router"
 
-import { AccountService } from "../../services"
+import { AccountService, Web3Service } from "../../services"
 
 @Component({
   selector: 'eg-view-account',
@@ -16,6 +16,7 @@ export class ViewAccountComponent {
 
   constructor(
     @Inject(AccountService) private accountService,
+    @Inject(Web3Service) private web3Service,
     @Inject(Router) private router,
   ) {
     this.account = accountService.account

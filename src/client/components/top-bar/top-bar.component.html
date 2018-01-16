@@ -68,12 +68,12 @@
               </a>
             </p>
             <p class="control" *ngIf="!accountService.loggedIn">
-              <a class="button is-primary" [routerLink]="['/account']">
+              <a class="button is-link" [routerLink]="['/account']">
                 <span>Sign in</span>
               </a>
             </p>
             <p class="control" *ngIf="accountService.loggedIn">
-              <a class="button is-primary" [routerLink]="['/account']">
+              <a class="button is-link" [routerLink]="['/account']">
                 <span class="icon">
                   <i class="fa fa-user"></i>
                 </span>

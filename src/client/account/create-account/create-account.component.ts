@@ -21,7 +21,11 @@ export class CreateAccountComponent {
     @Inject(Web3Service) private web3Service,
     @Inject(Router) private router,
   ) {
-    this.address = web3Service.getAddress()
+    this.update()
+  }
+
+  update() {
+    this.address = this.web3Service.getAddress()
   }
 
   submit() {

@@ -1,0 +1,51 @@
+<section *ngIf="accountService.account">
+  <div class="chat-window" *ngIf="isOpen">
+    <div class="chat-top-bar" (click)="isOpen = false">
+      
+    </div>
+    <div class="chat-body">
+      <div class="users-list">
+        <div class="media">
+          <div class="media-left">
+            <figure class="image is-24x24">
+              <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+            </figure>
+          </div>
+          <div class="media-content">
+            <p class="is-6">John Smith</p>
+          </div>
+        </div>
+      </div>
+      <div class="body">
+        <div class="messages">
+          <div class="from">
+            <div class="message">
+              hi, u trading?
+            </div>
+          </div>
+          <div class="to">
+            <div class="message">
+              ya, what u want?
+            </div>
+          </div>
+        </div>
+        <div class="input-container">
+          <input class="input" type="email" placeholder="type something">
+          <a class="icon is-small">
+            <i class="fa fa-paper-plane"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="chat-button" *ngIf="!isOpen">
+    <a class="button is-large is-link" (click)="isOpen = true">
+      <span class="icon is-medium">
+        <i class="fa fa-comment fa-lg"></i>
+      </span>
+    </a>
+    <span class="notifications" *ngIf="notifications > 0">
+      {{ notifications }}
+    </span>
+  </div>
+</section>
