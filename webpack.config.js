@@ -1,12 +1,29 @@
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin")
+const exec = require('child_process').exec
+
+const devMode = process.env.NODE_ENV !== "production"
 
 module.exports = {
+  mode: devMode ? "development" : "production",
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        styles: {
+          name: 'styles',
+          test: /\.css$/,
+          chunks: 'all',
+          enforce: true
+        }
+      }
+    }
+  },
   devtool: 'inline-source-map',
   entry: './src/client/index.ts',
   output: {
     filename: 'app.js',
-    path: __dirname + '/build/bundle'
+    path: __dirname + '/bundle'
   },
   node: {
     fs: 'empty'
@@ -24,27 +41,40 @@ module.exports = {
       },
       {
         test: /\.(css)$/,
-        loader: 'style-loader!css-loader'
+        use: [
+          devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'css-loader'
+        ]
       },
       {
         test: /\.sass$/,
-        loader: 'style-loader!css-loader!sass-loader'
+        use: [
+          devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader'
+        ]
       },
       {
         test: /\.(svg|png|eot|ttf|woff|woff2|wasm)$/,
         loader: 'file-loader',
         options: {
-          publicPath: "/bundle/"
+          publicPath: "/bundle"
         }
       }
-
     ]
   },
   plugins: [
-    new ExtractTextPlugin('styles.css'),
-    new UglifyJsPlugin({
-      test: /\.js($|\?)/i
-    }),
+    new MiniCssExtractPlugin(),
+    // new UglifyJsPlugin({
+    //   test: /\.js($|\?)/i
+    // })
+    devMode ? {
+      apply: (compiler) => {
+        compiler.hooks.afterEmit.tap('AfterEmitPlugin', (compilation) => {
+          exec('say webpack');
+        });
+      }
+    } : undefined
   ],
   resolve: {
     extensions: [".tsx", ".ts", ".js"]

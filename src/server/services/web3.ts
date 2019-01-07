@@ -6,7 +6,7 @@ import * as config from "../../../config.json"
 
 const ethGalleryAddress = config["address"]
 
-const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"))
+const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:9545"))
 
 const EthGalleryContract = web3.eth.contract(EthGallery["abi"])
 const ethGallery = EthGalleryContract.at(ethGalleryAddress)

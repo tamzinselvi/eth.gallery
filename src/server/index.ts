@@ -12,7 +12,7 @@ import { registerAccountListeners, registerPaintingListeners } from "./socket"
 
 import { app, events, http, sequelize, io, web3, paintingService } from "./services"
 
-const contentDir = path.resolve(`${__dirname}/../../content`);
+const contentDir = path.resolve(`${__dirname}/../../content`)
 
 if (!fs.existsSync(contentDir)) {
   fs.mkdirSync(contentDir)
@@ -124,10 +124,24 @@ io.use((socket, next) => {
 app.use(cookieParser)
 app.use(sessionMiddleware)
 
-app.use("/", express.static(path.join(__dirname, "../../build")))
+express.static.mime.types.wasm = "application/wasm"
+
+if (process.env.NODE_ENV === "production") {
+  app.use("/bundle", express.static(path.join(__dirname, "../../bundle")))
+} else {
+  /* tslint:disable no-var-requires */
+  const webpackConfig = require("../../webpack.config")
+  const webpack = require("webpack")
+  const middleware = require("webpack-dev-middleware")
+  const compiler = webpack(webpackConfig)
+  /* tslint:enable no-var-requires */
+
+  app.use(middleware(compiler, { publicPath: "/bundle" }))
+  app.use("/bundle", express.static(path.join(__dirname, "../../node_modules/libflif.js/lib")))
+}
 app.use("/content", express.static(path.join(__dirname, "../../content")))
 
-app.use("*", (req, res) => res.sendFile(path.join(__dirname, "../../build/index.html")))
+app.use("*", (req, res) => res.sendFile(path.join(__dirname, "index.html")))
 
 io.on("connection", (socket) => {
   console.log("a user has connected")
@@ -137,4 +151,4 @@ io.on("connection", (socket) => {
 })
 
 sequelize.sync()
-  .then(() => http.listen(process.env.PORT || 8081, () => console.log(`eth.gallery service has started on port ${process.env.PORT || 8080}`)))
+  .then(() => http.listen(process.env.PORT || 8080, () => console.log(`eth.gallery service has started on port ${process.env.PORT || 8080}`)))

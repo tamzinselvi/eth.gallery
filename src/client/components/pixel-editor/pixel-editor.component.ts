@@ -146,6 +146,7 @@ export class PixelEditorComponent implements OnInit {
         height: this.height,
       }],
     }).then((encodedBuffer) => {
+      console.log(encodedBuffer)
       const hB32 = []
 
       const hB = Array.prototype.map.call(new Uint8Array(encodedBuffer), x => pad(x.toString(16), 2))
